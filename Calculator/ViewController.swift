@@ -9,9 +9,10 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+    // inferred type
     var userIsInTheMiddleOfTyping = false
-
+    
+    // implicitly unwrapped optional
     @IBOutlet weak var display: UILabel!
     
     @IBAction func tuchDigit(_ sender: UIButton) {
@@ -30,6 +31,7 @@ class ViewController: UIViewController {
         
     }
     
+    // computed property
     var displayValue: Double {
         get {
             return Double(display.text!)!
@@ -39,19 +41,23 @@ class ViewController: UIViewController {
         }
     }
     
+    // private model property
+    private var brain = CalculatorBrain()
+    
     @IBAction func performOperation(_ sender: UIButton) {
-        userIsInTheMiddleOfTyping = false
+        if userIsInTheMiddleOfTyping {
+            brain.setOperand(displayValue)
+            userIsInTheMiddleOfTyping = false
+        }
+        
+        // perform the operation
         if let mathematicalSymbol = sender.currentTitle {
-            switch mathematicalSymbol {
-            case "π":
-                displayValue = Double.pi
-            //userIsInTheMiddleOfTyping = true
-            case "√":
-                let operand = Double(display.text!)!
-                displayValue = sqrt(operand)
-            default:
-                break
-            }
+            brain.performOperation(mathematicalSymbol)
+        }
+        
+        // update the display if I can
+        if let result = brain.result {
+            displayValue = result
         }
         
     }
